@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helper\JWTToken;
+use App\Mail\OTPMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -51,5 +53,29 @@ class UserController extends Controller
                'status' => 'failed',
                'message' => 'Unauthorized User'],200);
        }
+    }
+
+    function SendOTPCode(Request $request){
+        $email=$request->input('email');
+        $otp=rand(1000, 9999); //4 digit otp code.
+
+        $count=User::where('email','=',$email)->count();
+
+        if($count==1){
+            //Send OTP to user email
+            Mail::to($email)->send(new OTPMail($otp)); //Laravel has Mail property/class. From the class call methods "to" & "send"
+            //Insert OTP code and update users migration table.
+            User::where('email','=',$email)->update(['otp'=>$otp]); //otp column is updated.
+
+            return response()->json([
+                'status' => 'success',
+                'message' => '4 digit OTP code has been sent to your email!'],200);
+
+        }
+        else{
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Unauthorized User'],200);
+        }
     }
 }
