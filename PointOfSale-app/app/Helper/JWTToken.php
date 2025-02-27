@@ -21,6 +21,19 @@ class JWTToken
     return  JWT::encode($payload,$key,'HS256'); //payload, key and encryption algorithm
     }
 
+    public static function CreateTokenForSetPassword($userEmail):string{
+
+        $key = env('JWT_KEY');
+        $payload = [
+            'iss' =>'laravel_token',
+            'iat'=>time(), //token creation time
+            'exp'=>time()+60*20, //1200s = 20 Minutes. after 20 minutes token expire
+            'userEmail'=>$userEmail //to understand for whom the token is issued.when token is decoded we'll get the complete payload
+        ];
+
+        return  JWT::encode($payload,$key,'HS256'); //payload, key and encryption algorithm
+    }
+
     public static function VerifyToken($token){
         try{ //if token is tempered or expired then measures are needed. try block will handle token decode and catch will handle errors
             $key = env('JWT_KEY');
