@@ -31,7 +31,7 @@ class UserController extends Controller
         catch(Exception $e){
             return response()->json([
                 'status' => 'failed',
-                'message' => 'User Registration Failed'],200);
+                'message' => 'User Registration Failed'],401);
         }
     }
 
@@ -51,7 +51,7 @@ class UserController extends Controller
        else{
            return response()->json([
                'status' => 'failed',
-               'message' => 'Unauthorized User'],200);
+               'message' => 'Unauthorized User'],401);
        }
     }
 
@@ -75,7 +75,7 @@ class UserController extends Controller
         else{
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Unauthorized User'],200);
+                'message' => 'Unauthorized User'],401);
         }
     }
 
@@ -98,8 +98,25 @@ class UserController extends Controller
         else{
             return response()->json([
                 'status'=>'failed',
-                'message'=>'unauthorized'
-            ],200);
+                'message'=>'Unauthorized User'
+            ],401);
         }
+    }
+
+    function ResetPassword(Request $request) { // After OTP Verification a token was sent, by verifying & decoding that token we get the user email and password will be reset.
+     try { //without try-catch block error 500 will be thrown.
+         $email = $request->header('email'); // Only token is received from user and verified by middleware during password reset.User Email is used internally.
+         $password = $request->input('password');
+         User::where('email', '=', $email)->update(['password' => $password]);
+         return response()->json([
+             'status' => 'success',
+             'message' => 'Request Successful'],200);
+     }
+     catch(Exception $e){
+         return response()->json([
+             'status' => 'failed',
+             'message' => 'Something Went Wrong'],401);
+     }
+
     }
 }
