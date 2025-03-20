@@ -10,15 +10,15 @@ class JWTToken
 
     public static function CreateToken($userEmail):string{
 
-    $key = env('JWT_KEY');
-    $payload = [
-        'iss' =>'laravel_token',
-        'iat'=>time(), //token creation time
-        'exp'=>time()+60*60, //3600s = 1 hour. after an hour token expire
-        'userEmail'=>$userEmail //to understand for whom the token is issued.when token is decoded we'll get the complete payload
-    ];
+        $key = env('JWT_KEY');
+        $payload = [
+            'iss' =>'laravel_token',
+            'iat'=>time(), //token creation time
+            'exp'=>time()+60*60, //3600s = 1 hour. after an hour token expire
+            'userEmail'=>$userEmail //to understand for whom the token is issued.when token is decoded we'll get the complete payload
+        ];
 
-    return  JWT::encode($payload,$key,'HS256'); //payload, key and encryption algorithm
+        return  JWT::encode($payload,$key,'HS256'); //payload, key and encryption algorithm
     }
 
     public static function CreateTokenForSetPassword($userEmail):string{

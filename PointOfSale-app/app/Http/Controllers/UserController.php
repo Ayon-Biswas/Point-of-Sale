@@ -8,9 +8,32 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\View\View;
 class UserController extends Controller
 {
+    function LoginPage():View{
+        return view('pages.auth.login-page');
+    }
+
+    function RegistrationPage():View{
+        return view('pages.auth.registration-page');
+    }
+    function SendOtpPage():View{
+        return view('pages.auth.send-otp-page');
+    }
+    function VerifyOTPPage():View{
+        return view('pages.auth.verify-otp-page');
+    }
+
+    function ResetPasswordPage():View{
+        return view('pages.auth.reset-pass-page');
+    }
+
+    function ProfilePage():View{
+        return view('pages.dashboard.profile-page');
+    }
+
+
     //
     function UserRegistration(Request $request){
 
@@ -36,23 +59,23 @@ class UserController extends Controller
     }
 
     function UserLogin(Request $request){
-       $count = User::where('email','=',$request->input('email'))
-             ->where('password','=',$request->input('password'))
-             ->count();
+        $count = User::where('email','=',$request->input('email'))
+            ->where('password','=',$request->input('password'))
+            ->count();
 
-       if($count==1){
-           //user login-> JWT Token Issued
-           $token =JWTToken::CreateToken($request->input('email'));
-           return response()->json([
-               'status' => 'success',
-               'message' => 'User Login Successful',
-               'token'=> $token],200);
-       }
-       else{
-           return response()->json([
-               'status' => 'failed',
-               'message' => 'Unauthorized User'],401);
-       }
+        if($count==1){
+            //user login-> JWT Token Issued
+            $token =JWTToken::CreateToken($request->input('email'));
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User Login Successful',
+                'token'=> $token],200);
+        }
+        else{
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Unauthorized User'],401);
+        }
     }
 
     function SendOTPCode(Request $request){
